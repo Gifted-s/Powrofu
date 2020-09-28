@@ -86,7 +86,7 @@ const PlacesAutocomplete = () => {
                 rules={[
                     {
                         required: true,
-                        message: 'Please type you location here',
+                        message: 'Please type your location here',
                         whitespace: true,
                     },
                 ]}
