@@ -163,7 +163,7 @@ test('it cannot signup without password',async () => {
   });
   
 
-test('it can sign in',async () => {
+test('it can sign up with the right credentials',async () => {
   const body = {
     user: {
         email: 'uniquetestemail@gmail.com',
