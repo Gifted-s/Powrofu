@@ -1,11 +1,11 @@
 # Simple Signup Service
 
 This repository contains the code-base for a simple signup for powerofu
-### Server side built with Node.js 
+#### Server side built with Node.js 
 
-### Client side built with React.js 
+#### Client side built with React.js 
 
-### Database used - MongoDB
+#### Database used - MongoDB
 
 
 ## scripts
@@ -41,7 +41,7 @@ start server
 npm start
 ```
 server would start on port 4000
-open **localhost:4000** in your browser
+
 
 
 run tests
