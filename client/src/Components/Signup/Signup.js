@@ -4,12 +4,20 @@ import {
   Input,
   Select,
   Alert,
+  List,
+  message,
+  Col,
   Button,
 } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import PlacesAutocomplete from './SuggestPlace';
+import { UserOutlined, EnvironmentOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import handleSignUp from '../../apis/handleRequests';
 import { AuthContext } from '../../contexts/AuthContext';
+
+
+import usePlacesAutocomplete, {
+  getGeocode,
+  getLatLng,
+} from "use-places-autocomplete";
 const { Option } = Select;
 const formItemLayout = {
   labelCol: {
@@ -50,24 +58,94 @@ const tailFormItemLayout = {
 
 const SignUp = ({ history }) => {
   const { setUser } = React.useContext(AuthContext)
-  const [form] = Form.useForm();
+  // const [form] = Form.useForm();
+  let formRef = React.createRef();
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const onFinish = (values) => {
-    setLoading(true)
     setError('')
-    handleSignUp({ firstName: values.firstname, gender: values.gender, location: values.location, email: values.email, password: values.password }, (err, result) => {
-      if (err) {
-        setLoading(false)
-        return setError(err)
-      }
-      setLoading(false)
-      setUser(result.user)
-      // redirect to dashboard
-      return history.push('/dashboard')
-    })
+    setLoading(true)
 
+    const { firstname, gender, location, email, password } = values
+    handleSignUp({ gender, location, email, password, firstName: firstname })
+      .then(user => {
+        if (user.error) {
+          setLoading(false)
+          return message.error(user.error);
+        }
+        console.log(user)
+        setLoading(false)
+        setUser(user.user)
+        // redirect to dashboard
+        return history.push('/dashboard')
+      })
   };
+
+
+  const {
+    ready,
+    suggestions: { status, data },
+    setValue,
+    clearSuggestions,
+  } = usePlacesAutocomplete({
+    requestOptions: {
+      /* Define search scope here */
+    },
+    debounce: 300,
+  });
+  const handleInput = (e) => {
+    // Update the keyword of the input element
+    setValue(e.target.value);
+  };
+
+
+  const handleSelect = ({ description }) => () => {
+    // When user selects a place, we can replace the keyword without request data from API
+    // by setting the second parameter to "false"
+    getGeocode({ address: description })
+      .then((results) => getLatLng(results[0]))
+      .then(({ lat, lng }) => {
+        formRef.current.setFieldsValue({
+          location: `${description} ( Long: ${lng.toFixed(2)} | Lat: ${lat.toFixed(2)} )`,
+        });
+        clearSuggestions()
+      })
+      .catch((error) => {
+        formRef.current.setFieldsValue({
+          location: error.message,
+        });
+      });
+  };
+
+  const renderSuggestions = () => {
+
+
+    return (
+      <List
+        itemLayout="horizontal"
+        dataSource={data}
+        renderItem={suggestion => {
+          const {
+            id,
+            structured_formatting: { main_text, secondary_text },
+          } = suggestion;
+          return (
+            <List.Item className="location_list" key={id} onClick={handleSelect(suggestion)}>
+              <List.Item.Meta
+                avatar={<EnvironmentOutlined className="site-form-item-icon" />}
+                title={main_text}
+                description={secondary_text}
+              />
+            </List.Item>
+          )
+
+        }
+        }
+      />
+    );
+
+  }
+
 
 
 
@@ -76,17 +154,20 @@ const SignUp = ({ history }) => {
     <div className="form-container">
 
       <h3>sign up to have an account</h3>
-      
+
 
       <Form
         {...formItemLayout}
-        form={form}
+        ref={formRef}
         layout="vertical"
         name="register"
         onFinish={onFinish}
         scrollToFirstError
       >
-        {error && <Alert message={error} type="error" />}
+        {error &&
+          <Col sm={{ offset: 8, span: 8 }}>
+            <Alert message={error} type="error" />
+          </Col>}
         <Form.Item
 
           name="firstname"
@@ -108,7 +189,7 @@ const SignUp = ({ history }) => {
           rules={[
             {
               required: true,
-              message:'Gender is required'
+              message: 'Gender is required'
             },
           ]}
         >
@@ -124,20 +205,31 @@ const SignUp = ({ history }) => {
 
           </Select>
         </Form.Item>
-          <Form.Item
 
-                name="location"
-                label="Enter your location"
-                rules={[
-                    {
-                        required: true,
-                        message: 'Please type you location here',
-                        whitespace: true,
-                    },
-                ]}
-            >
-        <PlacesAutocomplete />
+
+        <Form.Item
+          key="location"
+          name="location"
+          label="Enter your location"
+          rules={[
+            {
+              required: true,
+              message: 'Please type you location here',
+              whitespace: true,
+            },
+          ]}
+        >
+          <Input disabled={!ready} onChange={handleInput} type="text" prefix={<EnvironmentOutlined className="site-form-item-icon" />} placeholder="Type your location here" />
         </Form.Item>
+        <Col sm={{ offset: 8, span: 8 }}>
+          {status === "OK" && renderSuggestions()}
+        </Col>
+
+
+
+
+
+
 
         <Form.Item
           name="email"
@@ -154,7 +246,7 @@ const SignUp = ({ history }) => {
             },
           ]}
         >
-          <Input />
+          <Input prefix={<MailOutlined className="site-form-item-icon" />} placeholder="Enter your email" />
         </Form.Item>
 
         <Form.Item
@@ -196,7 +288,7 @@ const SignUp = ({ history }) => {
         >
           <Input.Password prefix={<LockOutlined className="site-form-item-icon" />} placeholder="Retype your password" />
         </Form.Item>
-        
+
         <Form.Item {...tailFormItemLayout}>
           {
             loading ? <Button className="btn" type="primary" loading>Loading</Button> :
