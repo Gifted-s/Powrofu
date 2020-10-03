@@ -4,8 +4,8 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import DashBoard from './Components/Dashboard/Dashboard';
 import AuthContextProvider from './contexts/AuthContext';
 
-
 function App() {
+
   return (
     <BrowserRouter>
 

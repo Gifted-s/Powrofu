@@ -1,10 +1,15 @@
-import React from 'react';
+// import React from 'react';
 import {
-    Form,
     Input,
     List,
 } from 'antd';
 import { EnvironmentOutlined } from '@ant-design/icons';
+
+
+
+
+
+import React from "react";
 import usePlacesAutocomplete, {
     getGeocode,
     getLatLng,
@@ -19,11 +24,14 @@ const PlacesAutocomplete = () => {
         setValue,
         clearSuggestions,
     } = usePlacesAutocomplete({
-        requestOptions: {},
+        requestOptions: {
+            /* Define search scope here */
+        },
         debounce: 300,
     });
     const ref = useOnclickOutside(() => {
         // When user clicks outside of the component, we can dismiss
+        // the searched suggestions by calling this method
         clearSuggestions();
     });
 
@@ -33,67 +41,46 @@ const PlacesAutocomplete = () => {
     };
 
     const handleSelect = ({ description }) => () => {
-        setValue(description, false);
-        clearSuggestions();
+        // Get latitude and longitude via utility functions
         getGeocode({ address: description })
             .then((results) => getLatLng(results[0]))
             .then(({ lat, lng }) => {
-                setValue(`${value}Lat: ${lat}° Long: +${lng}°`)
-               
+                setValue(`${description}  (Long: ${lng.toFixed(2)}° | Lat: ${lat.toFixed(2)}°) `, false)
+                clearSuggestions()
             })
             .catch((error) => {
-                setValue(error.message)
+                setValue(error.message, false)
             });
     };
 
     const renderSuggestions = () =>
-    {
-        return (
-            <div>
-                <List
-                    itemLayout="horizontal"
-                    dataSource={data}
-                    renderItem={suggestion => {
-                        const {
-                            id,
-                            structured_formatting: { main_text, secondary_text },
-                        } = suggestion;
-                        return (
-                            <List.Item  key={id} onClick={handleSelect(suggestion)}>
-                                <List.Item.Meta
-                                    avatar={<EnvironmentOutlined className="site-form-item-icon" />}
-                                    title={main_text}
-                                    description={secondary_text}
-                                />
-                            </List.Item>
-                        )
+        <List
+            itemLayout="horizontal"
+            dataSource={data}
+            renderItem={suggestion => {
+                const {
+                    id,
+                    structured_formatting: { main_text, secondary_text },
+                } = suggestion;
+                return (
+                    <List.Item key={id} onClick={handleSelect(suggestion)}>
+                        <List.Item.Meta
+                            avatar={<EnvironmentOutlined className="site-form-item-icon" />}
+                            title={main_text}
+                            description={secondary_text}
+                        />
+                    </List.Item>
+                )
 
-                    }
-                    }
-                />
-            </div>
-        );
-    }
-     
+            }
+            }
+        />
 
     return (
         <div ref={ref}>
-
-            <Form.Item
-
-                name="location"
-                label="Enter your location"
-                rules={[
-                    {
-                        required: true,
-                        message: 'Please type you location here',
-                        whitespace: true,
-                    },
-                ]}
-            >
-                <Input disabled={!ready} value={value} prefix={<EnvironmentOutlined className="site-form-item-icon" />} onChange={handleInput} placeholder="Enter location here" />
-            </Form.Item>
-            {status === "OK" && <ul>{renderSuggestions()}</ul>}
+            <Input disabled={!ready} value={value} prefix={<EnvironmentOutlined className="site-form-item-icon" />} onChange={handleInput} placeholder="Enter location here" />
+            {/* We can use the "status" to decide whether we should display the dropdown or not */}
+            {status === "OK" && renderSuggestions()}
         </div>
     );
 };

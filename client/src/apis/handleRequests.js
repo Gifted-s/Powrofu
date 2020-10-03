@@ -1,6 +1,6 @@
 import config  from '../utils/endpoints'
 const handleSignUp= async (body, callback)=>{
-   let response=  await fetch(config.signUpUrl, {
+    fetch(config.signUpUrl, {
         method:'Post',
         headers:{
             'Content-type':config.headers.contentType,
@@ -11,12 +11,9 @@ const handleSignUp= async (body, callback)=>{
         })
     })
     .then((response)=>response.json())
-    .then(resJson => resJson)
-    .catch(err => err.message)
-    if(response.error){
-        return callback(response.error)
-    }
-    return callback(null, response)
+    .then(responseBody => callback(null, responseBody))
+    .catch(err => callback(err.message))
+    
 
 }
 export default handleSignUp

@@ -124,7 +124,20 @@ const SignUp = ({ history }) => {
 
           </Select>
         </Form.Item>
+          <Form.Item
+
+                name="location"
+                label="Enter your location"
+                rules={[
+                    {
+                        required: true,
+                        message: 'Please type you location here',
+                        whitespace: true,
+                    },
+                ]}
+            >
         <PlacesAutocomplete />
+        </Form.Item>
 
         <Form.Item
           name="email"
