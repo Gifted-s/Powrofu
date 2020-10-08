@@ -24,7 +24,7 @@ function DashBoard() {
     }
     const pageSize = 7;
     const getData = (current, pageSize) => {
-        // Slice data to chuck it 
+        // Slice data to chunck it 
         return data.slice((current - 1) * pageSize, current * pageSize);
     };
     const MyPagination = ({ total, onChange, current }) => {

@@ -30,7 +30,8 @@ test('Must render properly', () => {
     .toJSON();
   expect(tree).toMatchSnapshot();
 });
-test('it cannot signup with values',async () => {
+
+test('it cannot signup without values',async () => {
   const formInput= {
     email: '',
     password:'',
@@ -55,7 +56,7 @@ test('it cannot signup with values',async () => {
 
 
 
-test('it cannot signup withut email',async () => {
+test('it cannot signup without email',async () => {
     const formInput= {
       email: '',
       password:'Ayodeji00;',
@@ -146,26 +147,8 @@ test('it cannot signup without password',async () => {
   });
   
   
-  test('it cannot signup without gender',async () => {
-    const formInput= {
-      email: 'uniquetestemail@gmail.com',
-      password:'Ayodeji00;',
-      location:'Ado Ekiti Lat 34^ Log40^',
-      firstname:'Adewumi',
-      gender:'male'
-    };
-    const { getByLabelText, getByText} = render(componentTest());
-       fireEvent.change(getByLabelText(/First name/i), {target:{value:formInput.firstname}})
-       fireEvent.change(getByLabelText(/Gender/i), {target:{value:formInput.gender}})
-       fireEvent.change(getByLabelText(/E-mail/i), {target:{value:formInput.email}})
-       fireEvent.change(getByLabelText(/Enter your location/i), {target:{value:formInput.location}})
-       fireEvent.change(getByLabelText('Password'), {target:{value:formInput.password}})
-       fireEvent.click(getByText(/Signup/i))
-       expect(()=>getByText(/Welcome Adewumi/i)).toBeTruthy()
-  });
   
-
-test('it can sign up with the right credentials',async () => {
+test('it can signup with the right credentials',async () => {
   const body = {
     user: {
         email: 'uniquetestemail@gmail.com',

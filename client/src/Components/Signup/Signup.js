@@ -80,6 +80,7 @@ const SignUp = ({ history }) => {
       })
   };
 
+
   const {
     ready,
     suggestions: { status, data },
@@ -192,7 +193,9 @@ const SignUp = ({ history }) => {
           ]}
         >
           <Select
+
             placeholder="Select your gender"
+            
           >
             <Option value="male">male</Option>
             <Option value="female">female</Option>

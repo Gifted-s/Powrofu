@@ -1,4 +1,4 @@
-import config from '../utils/endpoints'
+import config from '../utils/apiConfig'
 const handleSignUp = (body) => {
  
         let response =  fetch(config.signUpUrl, {
