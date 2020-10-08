@@ -9,9 +9,6 @@ const cors = require('cors')
 const helmet = require('helmet')
 app.use(cors())
 app.use(express.json())
-app.use(express.urlencoded({
-  extended: true
-}))
 app.use(helmet())
 const PORT = process.env.PORT || process.env.DEV_PORT
 let connection = app.listen(PORT, ()=> console.log('server listening'))
