@@ -22,8 +22,8 @@
    text-align:center
  }
  .location_list{
-   height:55px;
+   height:60px;
  }
  .location_list:hover{
-  background-color: rgba(9, 102, 131, 0.1);
+  background-color: rgba(9, 102, 131, 0.04);
  }

@@ -58,8 +58,7 @@ const tailFormItemLayout = {
 
 const SignUp = ({ history }) => {
   const { setUser } = React.useContext(AuthContext)
-  // const [form] = Form.useForm();
-  let formRef = React.createRef();
+  const [form] = Form.useForm();
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const onFinish = (values) => {
@@ -68,19 +67,18 @@ const SignUp = ({ history }) => {
 
     const { firstname, gender, location, email, password } = values
     handleSignUp({ gender, location, email, password, firstName: firstname })
-      .then(user => {
-        if (user.error) {
-          setLoading(false)
-          return message.error(user.error);
+      .then(response => {
+        if (response.error) {
+
+          message.error(response.error);
+          return setLoading(false)
         }
-        console.log(user)
         setLoading(false)
-        setUser(user.user)
+        setUser(response.user)
         // redirect to dashboard
         return history.push('/dashboard')
       })
   };
-
 
   const {
     ready,
@@ -105,13 +103,13 @@ const SignUp = ({ history }) => {
     getGeocode({ address: description })
       .then((results) => getLatLng(results[0]))
       .then(({ lat, lng }) => {
-        formRef.current.setFieldsValue({
+        form.setFieldsValue({
           location: `${description} ( Long: ${lng.toFixed(2)} | Lat: ${lat.toFixed(2)} )`,
         });
         clearSuggestions()
       })
       .catch((error) => {
-        formRef.current.setFieldsValue({
+        form.setFieldsValue({
           location: error.message,
         });
       });
@@ -158,7 +156,7 @@ const SignUp = ({ history }) => {
 
       <Form
         {...formItemLayout}
-        ref={formRef}
+        form={form}
         layout="vertical"
         name="register"
         onFinish={onFinish}
@@ -194,11 +192,7 @@ const SignUp = ({ history }) => {
           ]}
         >
           <Select
-
-            placeholder="Select a option and change input text above"
-
-            // onChange={this.onGenderChange}
-            allowClear
+            placeholder="Select your gender"
           >
             <Option value="male">male</Option>
             <Option value="female">female</Option>

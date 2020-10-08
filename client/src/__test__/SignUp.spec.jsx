@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, BrowserRouter, Switch } from 'react-router-dom';
+import renderer from 'react-test-renderer';
 import { render,fireEvent } from '@testing-library/react';
 import { default as fetcher } from 'node-fetch';
 import SignUp from '../Components/Signup/Signup';
@@ -23,11 +24,12 @@ const componentTest = () => {
   );
 };
 
-// run snapshot test
 test('Must render properly', () => {
-  expect(() => render(componentTest()).container).toMatchSnapshot();
+  const tree = renderer
+    .create(componentTest())
+    .toJSON();
+  expect(tree).toMatchSnapshot();
 });
-
 test('it cannot signup with values',async () => {
   const formInput= {
     email: '',

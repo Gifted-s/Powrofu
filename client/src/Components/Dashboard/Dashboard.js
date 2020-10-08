@@ -11,9 +11,17 @@ import {
 import { data, columns } from '../../utils/userdata'
 import { UserOutlined, SearchOutlined } from '@ant-design/icons';
 import { AuthContext } from '../../contexts/AuthContext';
+import { Redirect } from 'react-router-dom';
 
 function DashBoard() {
-    const {user: userDetails} = React.useContext(AuthContext)
+    const [current, setCurrent] = useState(1);
+    const [searchResult, setSearchResult] = useState(0)
+    const [visible, setVisible] = useState(false)
+    const [user, setUser] = useState({})
+    const { user: userDetails } = React.useContext(AuthContext)
+    if(!userDetails._id){
+        return <Redirect to="/"/>
+    }
     const pageSize = 7;
     const getData = (current, pageSize) => {
         // Slice data to chuck it 
@@ -29,23 +37,20 @@ function DashBoard() {
             />
         );
     };
-    const [current, setCurrent] = useState(1);
-    const [searchResult, setSearchResult] = useState(0)
-    const [visible, setVisible] = useState(false)
-    const [user, setUser] = useState({})
+
     return (
         <div className="">
             <PageHeader
                 className="site-page-header-responsive"
-                title={'Welcome ' +userDetails.firstName}
+                title={`Welcome  ${userDetails.firstName}`}
                 subTitle=""
                 extra={[
                     <Input key={1}
                         onChange={(e) => {
                             const textSearched = e.target.value
-                            let filtered = (searchResult.length > 0 ? searchResult : data).filter((d) => {
+                            let filtered = (searchResult.length > 0 ? searchResult : data).filter((userObj) => {
                                 //checking if text exists in each user email
-                                return d.email.search(new RegExp(textSearched, 'i')) === -1
+                                return userObj.email.search(new RegExp(textSearched, 'i')) === -1
                                     ||
                                     textSearched === "" ? false : true
                             })
