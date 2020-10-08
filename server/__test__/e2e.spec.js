@@ -1,8 +1,10 @@
 
 const axios = require('axios')
+const faker = require('faker')
 const  mongodb  = require('mongodb') 
 const MongoClient = mongodb.MongoClient
 const {connection} = require('../index')
+const fakeUser = require('./fixtures/fakeUser')
 let db;
 let client;
 beforeAll(async () => {
@@ -32,9 +34,6 @@ afterAll(async ( )=>{
   await db.collection('users').deleteMany({})
   await client.close()
   connection.close()
-  
-   
-
 })
 let root = 'http://localhost:4000'
 describe('signup a user', () => {
@@ -42,12 +41,8 @@ describe('signup a user', () => {
 
         const response = await axios.post(
             root + '/signup',
-            {
+            {  ...fakeUser,
                 firstName: '',
-                location: 'Yasme, Cameroon Long 35° Lat 80°',
-                gender: 'female',
-                email: 'test@gmail.com',
-                password:'##dfdfdf'
             }
         )
       
@@ -60,11 +55,8 @@ describe('signup a user', () => {
         const response = await axios.post(
             root + '/signup',
             {
-                firstName: 'test name',
-                location: 'Yasme, Cameroon Long 35° Lat 80°',
+                ...fakeUser,
                 gender: '',
-                email: 'test@gmail.com',
-                password:'###sjdhbdf'
             }
         )
       
@@ -78,11 +70,8 @@ describe('signup a user', () => {
         const response = await axios.post(
             root + '/signup',
             {
-                firstName: 'test name',
-                location: 'Yasme, Cameroon Long 35° Lat 80°',
-                gender: 'male',
+                ...fakeUser,
                 email: '',
-                password:'#2323nhjkdjf'
             }
         )
       
@@ -95,11 +84,9 @@ describe('signup a user', () => {
         const response = await axios.post(
             root + '/signup',
             {
-                firstName: 'test name',
+               ...fakeUser,
                 location: '',
-                gender: 'male',
-                email: 'test@gmail.com',
-                password:'#2323nhjkdjf'
+              
             }
         )
       
@@ -112,10 +99,7 @@ describe('signup a user', () => {
         const response = await axios.post(
             root + '/signup',
             {
-                firstName: 'testname',
-                location: 'Yasme, Cameroon Long 35° Lat 80°',
-                gender: 'female',
-                email: 'test@gmail.com',
+                ...fakeUser,
                 password:''
             }
         )
@@ -133,25 +117,22 @@ describe('signup a user', () => {
 
 
     it('will not add duplicate emails', async () => {
+        const testEmail = faker.internet.email()
           //add the first user with an email
           await axios.post(
             root + '/signup',
             {
-                firstName: 'testname',
-                location: 'Yasme, Cameroon Long 35° Lat 80°',
-                gender: 'female',
-                email: 'test@gmail.com',
-                password:'###skidj'
+                ...fakeUser,
+                email: testEmail,
+                
             })
             // signup with used email
           const response=  await axios.post(
                 root + '/signup',
                 {
-                    firstName: 'testname2',
-                    location: 'Yasme, Cameroon Long 35° Lat 80°',
-                    gender: 'female',
-                    email: 'test@gmail.com',
-                    password:'###skidj'
+                    ...fakeUser,
+                    email: testEmail,
+                    
                 })
         expect(response.status).toBe(400)
         expect(response.data.error).toBe('user exists, try login')
@@ -162,11 +143,7 @@ describe('signup a user', () => {
         const response=  await axios.post(
               root + '/signup',
               {
-                  firstName: 'testname2',
-                  location: 'Yasme, Cameroon Long 35° Lat 80°',
-                  gender: 'female',
-                  email: 'randommemail_1@gmail.com',
-                  password:'###skidj'
+               ...fakeUser
               })
       expect(response.status).toBe(201)
       expect(response.data.status).toBe('success')

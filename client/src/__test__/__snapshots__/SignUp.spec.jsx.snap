@@ -111,7 +111,7 @@ exports[`Must render properly 1`] = `
             className="ant-form-item-control-input-content"
           >
             <div
-              className="ant-select ant-select-single ant-select-allow-clear ant-select-show-arrow"
+              className="ant-select ant-select-single ant-select-show-arrow"
               onBlur={[Function]}
               onFocus={[Function]}
               onKeyDown={[Function]}

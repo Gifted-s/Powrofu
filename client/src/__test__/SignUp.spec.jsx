@@ -37,7 +37,8 @@ test('it cannot signup without values',async () => {
     password:'',
     location:'',
     firstname:'',
-    gender:''
+    gender:'',
+    confirm:''
   
   };
   const { getByLabelText, getByText} = render(componentTest());
@@ -46,12 +47,14 @@ test('it cannot signup without values',async () => {
      fireEvent.change(getByLabelText(/E-mail/i), {target:{value:formInput.email}})
      fireEvent.change(getByLabelText(/Enter your location/i), {target:{value:formInput.location}})
      fireEvent.change(getByLabelText('Password'), {target:{value:formInput.password}})
+     fireEvent.change(getByLabelText('Confirm Password'), {target:{value:formInput.password}})
      fireEvent.click(getByText(/Signup/i))
      expect(()=>getByText(/Please input your firstname/i)).toBeTruthy()
      expect(()=>getByText(/Gender is required/i)).toBeTruthy()
      expect(()=>getByText(/Please input your E-mail!/i)).toBeTruthy()
      expect(()=>getByText(/Please type you location here/i)).toBeTruthy()
      expect(()=>getByText(/Please input your password!/i)).toBeTruthy()
+     expect(()=>getByText(/Please confirm your password!/i)).toBeTruthy()
 });
 
 
@@ -60,6 +63,7 @@ test('it cannot signup without email',async () => {
     const formInput= {
       email: '',
       password:'Ayodeji00;',
+      confirm:'Ayodeji00;',
       location:'Ado Ekiti Lat 34^ Log40^',
       firstname:'Adewumi',
       gender:'Male'
@@ -68,6 +72,7 @@ test('it cannot signup without email',async () => {
        fireEvent.change(getByLabelText(/First name/i), {target:{value:formInput.firstname}})
        fireEvent.change(getByLabelText(/Gender/i), {target:{value:formInput.gender}})
        fireEvent.change(getByLabelText(/E-mail/i), {target:{value:formInput.email}})
+       fireEvent.change(getByLabelText(/Confirm Password/i), {target:{value:formInput.confirm}})
        fireEvent.change(getByLabelText(/Enter your location/i), {target:{value:formInput.location}})
        fireEvent.change(getByLabelText('Password'), {target:{value:formInput.password}})
        fireEvent.click(getByText(/Signup/i))
@@ -92,12 +97,13 @@ test('it cannot signup without password',async () => {
        fireEvent.click(getByText(/Signup/i))
        expect(()=>getByText(/Please input your password!/i)).toBeTruthy()
   });
-  
-  test('it cannot signup without location',async () => {
+
+  test('it cannot signup if password does not match',async () => {
     const formInput= {
       email: 'test@gmail.com',
-      password:'Ayodeji00;',
-      location:'',
+      password:'adewumi001',
+      confirm:'001fgffgfgfg',
+      location:'Ado Ekiti Lat 34^ Log40^',
       firstname:'Adewumi',
       gender:'Male'
     };
@@ -108,12 +114,34 @@ test('it cannot signup without password',async () => {
        fireEvent.change(getByLabelText(/Enter your location/i), {target:{value:formInput.location}})
        fireEvent.change(getByLabelText('Password'), {target:{value:formInput.password}})
        fireEvent.click(getByText(/Signup/i))
+       expect(()=>getByText(/The two passwords that you entered do not match!/i)).toBeTruthy()
+  });
+  
+  test('it cannot signup without location',async () => {
+    const formInput= {
+      email: 'test@gmail.com',
+      password:'Ayodeji00;',
+      location:'',
+      confirm:'Ayodeji00;',
+      firstname:'Adewumi',
+      gender:'Male'
+    };
+    const { getByLabelText, getByText} = render(componentTest());
+       fireEvent.change(getByLabelText(/First name/i), {target:{value:formInput.firstname}})
+       fireEvent.change(getByLabelText(/Gender/i), {target:{value:formInput.gender}})
+       fireEvent.change(getByLabelText(/E-mail/i), {target:{value:formInput.email}})
+
+       fireEvent.change(getByLabelText(/Enter your location/i), {target:{value:formInput.location}})
+       fireEvent.change(getByLabelText('Password'), {target:{value:formInput.password}})
+       fireEvent.change(getByLabelText(/Confirm Password/i), {target:{value:formInput.confirm}})
+       fireEvent.click(getByText(/Signup/i))
        expect(()=>getByText(/Please type you location here/i)).toBeTruthy()
   });
   test('it cannot signup without firstname',async () => {
     const formInput= {
       email: 'test@gmail.com',
       password:'Ayodeji00;',
+      confirm:'Ayodeji00;',
       location:'Ado Ekiti Lat 34^ Log40^',
       firstname:'',
       gender:'Male'
@@ -122,6 +150,7 @@ test('it cannot signup without password',async () => {
        fireEvent.change(getByLabelText(/First name/i), {target:{value:formInput.firstname}})
        fireEvent.change(getByLabelText(/Gender/i), {target:{value:formInput.gender}})
        fireEvent.change(getByLabelText(/E-mail/i), {target:{value:formInput.email}})
+       fireEvent.change(getByLabelText(/Confirm Password/i), {target:{value:formInput.confirm}})
        fireEvent.change(getByLabelText(/Enter your location/i), {target:{value:formInput.location}})
        fireEvent.change(getByLabelText('Password'), {target:{value:formInput.password}})
        fireEvent.click(getByText(/Signup/i))
@@ -132,6 +161,7 @@ test('it cannot signup without password',async () => {
     const formInput= {
       email: 'test@gmail.com',
       password:'Ayodeji00;',
+      confirm:'Ayodeji00;',
       location:'Ado Ekiti Lat 34^ Log40^',
       firstname:'Adewumi',
       gender:''
@@ -140,6 +170,7 @@ test('it cannot signup without password',async () => {
        fireEvent.change(getByLabelText(/First name/i), {target:{value:formInput.firstname}})
        fireEvent.change(getByLabelText(/Gender/i), {target:{value:formInput.gender}})
        fireEvent.change(getByLabelText(/E-mail/i), {target:{value:formInput.email}})
+       fireEvent.change(getByLabelText(/Confirm Password/i), {target:{value:formInput.confirm}})
        fireEvent.change(getByLabelText(/Enter your location/i), {target:{value:formInput.location}})
        fireEvent.change(getByLabelText('Password'), {target:{value:formInput.password}})
        fireEvent.click(getByText(/Signup/i))
@@ -155,6 +186,7 @@ test('it can signup with the right credentials',async () => {
         password:'Ayodeji00;',
         location:'Ado Ekiti Lat 34^ Log40^',
         firstName:'Adewumi',
+        confirm:'Ayodeji00;',
         gender:'male'
     },
     status: 'success',
@@ -173,6 +205,7 @@ test('it can signup with the right credentials',async () => {
       fireEvent.change(getByLabelText(/First name/i), {target:{value:formInput.firstname}})
       fireEvent.change(getByLabelText(/Gender/i), {target:{value:formInput.gender}})
       fireEvent.change(getByLabelText(/E-mail/i), {target:{value:formInput.email}})
+      fireEvent.change(getByLabelText(/Confirm Password/i), {target:{value:formInput.confirm}})
       fireEvent.change(getByLabelText(/Enter your location/i), {target:{value:formInput.location}})
       fireEvent.change(getByLabelText('Password'), {target:{value:formInput.password}})
      fireEvent.click(getByText(/Signup/i))

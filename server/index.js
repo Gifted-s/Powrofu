@@ -13,7 +13,7 @@ app.use(helmet())
 const PORT = process.env.PORT || process.env.DEV_PORT
 let connection = app.listen(PORT, ()=> console.log('server listening'))
 app.post('/signup', makeCallback(controllers.postUser))
-module.exports = {connection, app}
+module.exports = {connection}
 
 
 
